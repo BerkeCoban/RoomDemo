@@ -1,4 +1,4 @@
-package com.example.android.roomwordssample;
+package com.berke.android.roomwordssample;
 
 /*
  * Copyright (C) 2017 Google Inc.
@@ -18,7 +18,6 @@ package com.example.android.roomwordssample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.roomwordssample;
+package com.berke.android.roomwordssample;
 
 import android.view.LayoutInflater;
 import android.view.View;
