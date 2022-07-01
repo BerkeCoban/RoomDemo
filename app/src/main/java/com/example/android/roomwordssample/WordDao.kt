@@ -36,6 +36,8 @@ interface WordDao {
 
     // The flow always holds/caches latest version of data. Notifies its observers when the
     // data has changed.
+
+    // alfabetik siralam icin ASC
     @Query("SELECT * FROM word_table ORDER BY word ASC")
     fun getAlphabetizedWords(): Flow<List<Word>>
 

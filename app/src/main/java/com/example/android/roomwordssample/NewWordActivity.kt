@@ -30,6 +30,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 class NewWordActivity : AppCompatActivity() {
 
+    //view binding ekle sonra.
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_word)
@@ -50,6 +52,6 @@ class NewWordActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_REPLY = "com.example.android.wordlistsql.REPLY"
+        const val EXTRA_REPLY = "com.berke.android.REPLY"
     }
 }

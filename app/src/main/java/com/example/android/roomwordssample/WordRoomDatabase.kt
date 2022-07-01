@@ -69,8 +69,6 @@ abstract class WordRoomDatabase : RoomDatabase() {
              */
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                // If you want to keep the data through app restarts,
-                // comment out the following line.
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
                         populateDatabase(database.wordDao())
@@ -88,9 +86,9 @@ abstract class WordRoomDatabase : RoomDatabase() {
             // Not needed if you only populate on creation.
             wordDao.deleteAll()
 
-            var word = Word("Hello")
+            var word = Word("Hello","1")
             wordDao.insert(word)
-            word = Word("World!")
+            word = Word("World!","2")
             wordDao.insert(word)
         }
     }
