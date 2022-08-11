@@ -19,13 +19,16 @@ package com.example.android.roomwordssample
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.roomwordssample.WordListAdapter.WordViewHolder
 
-class WordListAdapter : ListAdapter<Word, WordViewHolder>(WORDS_COMPARATOR) {
+class WordListAdapter(vm : WordViewModel) : ListAdapter<Word, WordViewHolder>(WORDS_COMPARATOR) {
+
+    var  viewModel : WordViewModel = vm
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
         return WordViewHolder.create(parent)
@@ -33,16 +36,28 @@ class WordListAdapter : ListAdapter<Word, WordViewHolder>(WORDS_COMPARATOR) {
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current.word,current.device)
+        holder.bind(current.word,current.id.toString(),viewModel)
     }
 
     class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val wordItemView: TextView = itemView.findViewById(R.id.textView)
         private val id: TextView = itemView.findViewById(R.id.textView2)
+        private val layout: LinearLayout = itemView.findViewById(R.id.linear)
 
-        fun bind(text: String?,text2: String?) {
+        fun bind(text: String?,text2: String?,vm: WordViewModel) {
             wordItemView.text = text
             id.text = text2
+            layout.setOnClickListener {
+
+                  vm.updateById(id.text.toString().toInt(),"cobi")
+
+                //            val a = repository.getAll()
+//        //update with primary key
+//      val user = Word("Berke","1")
+//      repository.update(user)
+
+
+            }
         }
 
         companion object {

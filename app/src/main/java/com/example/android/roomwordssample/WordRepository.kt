@@ -47,6 +47,11 @@ class WordRepository(private val wordDao: WordDao) {
     }
 
     @WorkerThread
+    suspend fun getById(id:Int) :Word {
+        return  wordDao.getById(id)
+    }
+
+    @WorkerThread
     suspend fun deleteAll() {
         wordDao.deleteAll()
     }

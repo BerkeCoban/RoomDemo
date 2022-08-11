@@ -46,12 +46,15 @@ class WordViewModel(private val repository: WordRepository) : ViewModel() {
 
     fun deleteAll() = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAll()
-
-//            val a = repository.getAll()
-//        //update with primary key
-//      val user = Word("Berke","1")
-//      repository.update(user)
     }
+
+    fun updateById(id:Int,name:String) = viewModelScope.launch(Dispatchers.IO) {
+       val  word : Word = repository.getById(id)
+        word.word = name
+        repository.update(word)
+    }
+
+
 }
 
 class WordViewModelFactory(private val repository: WordRepository) : ViewModelProvider.Factory {

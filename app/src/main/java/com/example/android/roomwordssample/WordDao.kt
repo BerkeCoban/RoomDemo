@@ -49,4 +49,7 @@ interface WordDao {
 
     @Query("SELECT * FROM word_table ORDER BY word ASC")
     suspend fun getAll() : List<Word>
+
+    @Query("SELECT * FROM word_table WHERE id=:id")
+    suspend fun getById(id: Int) : Word
 }

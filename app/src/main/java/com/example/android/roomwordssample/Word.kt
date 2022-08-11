@@ -32,8 +32,8 @@ import androidx.room.PrimaryKey
  */
 
 @Entity(tableName = "word_table")
-data class Word(@PrimaryKey(autoGenerate = true) val id: Long,
-                @ColumnInfo(name = "word") val word: String,
+data class Word(@PrimaryKey(autoGenerate = true) val id: Int,
+                @ColumnInfo(name = "word") var word: String,
                 @ColumnInfo(name = "device") val device: String){
     constructor(word:String, device: String) : this(0, word, device)
 }

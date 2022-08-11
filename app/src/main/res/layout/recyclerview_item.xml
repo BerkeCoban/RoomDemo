@@ -16,6 +16,7 @@ limitations under the License. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     style="@style/word_title"
+    android:id="@+id/linear"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
