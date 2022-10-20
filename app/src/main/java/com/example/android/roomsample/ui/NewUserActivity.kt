@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.roomwordssample
+package com.example.android.roomsample.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -23,28 +23,32 @@ import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android.roomsample.R
 
 /**
  * Activity for entering a word.
  */
 
-class NewWordActivity : AppCompatActivity() {
+class NewUserActivity : AppCompatActivity() {
 
     //view binding ekle sonra.
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_word)
-        val editWordView = findViewById<EditText>(R.id.edit_word)
+        val editNameView = findViewById<EditText>(R.id.edit_name)
+        val editSurnameView = findViewById<EditText>(R.id.edit_surname)
 
         val button = findViewById<Button>(R.id.button_save)
         button.setOnClickListener {
             val replyIntent = Intent()
-            if (TextUtils.isEmpty(editWordView.text)) {
+            if (TextUtils.isEmpty(editNameView.text) || TextUtils.isEmpty(editSurnameView.text)) {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
             } else {
-                val word = editWordView.text.toString()
-                replyIntent.putExtra(EXTRA_REPLY, word)
+                val name = editNameView.text.toString()
+                val surname = editSurnameView.text.toString()
+                replyIntent.putExtra(EXTRA_REPLY, name)
+                replyIntent.putExtra(EXTRA_REPLY_SURNAME, surname)
                 setResult(Activity.RESULT_OK, replyIntent)
             }
             finish()
@@ -53,5 +57,6 @@ class NewWordActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_REPLY = "com.berke.android.REPLY"
+        const val EXTRA_REPLY_SURNAME = "com.berke.android.REPLY_SURNAME"
     }
 }

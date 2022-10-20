@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.android.roomwordssample
+package com.example.android.roomsample.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 /**
  * A basic class representing an entity that is a row in a one-column database table.
@@ -31,9 +29,33 @@ import androidx.room.PrimaryKey
  * https://developer.android.com/topic/libraries/architecture/room.html
  */
 
-@Entity(tableName = "word_table")
-data class Word(@PrimaryKey(autoGenerate = true) val id: Int,
-                @ColumnInfo(name = "word") var word: String,
-                @ColumnInfo(name = "device") val device: String){
-    constructor(word:String, device: String) : this(0, word, device)
+@Entity(tableName = "user_table")
+data class User(@PrimaryKey(autoGenerate = true) val id: Int,
+                @ColumnInfo(name = "name") var name: String,
+                @ColumnInfo(name = "surname") var surname: String
+              )
+//  @ColumnInfo(name = "extrafield") var extra: Int
+{
+    constructor(name:String, surname: String) : this(0, name, surname)
+
+    //extra: Int
 }
+
+
+@Entity(tableName = "device_table")
+data class Device(@PrimaryKey(autoGenerate = true) val id: Int,
+                  @ColumnInfo(name = "ownerId") val ownerId: Int,
+                  @ColumnInfo(name = "model") val deviceModel: String)
+{
+    constructor( id: Int,model:String) : this(0, id, model)
+}
+
+
+data class UserAndDevice(
+        @Embedded val user: User,
+        @Relation(
+                parentColumn = "id",
+                entityColumn = "ownerId"
+        )
+        val device: Device
+)

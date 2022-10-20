@@ -1,4 +1,4 @@
-package com.example.android.roomwordssample
+package com.example.android.roomsample
 
 /*
  * Copyright (C) 2017 Google Inc.
@@ -20,6 +20,9 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.roomsample.dao.MyDao
+import com.example.android.roomsample.db.MainRoomDatabase
+import com.example.android.roomsample.entities.User
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -37,21 +40,21 @@ import java.io.IOException
  */
 
 @RunWith(AndroidJUnit4::class)
-class WordDaoTest {
+class UserDaoTest {
 
-    private lateinit var wordDao: WordDao
-    private lateinit var db: WordRoomDatabase
+    private lateinit var MyDao: MyDao
+    private lateinit var db: MainRoomDatabase
 
     @Before
     fun createDb() {
         val context: Context = ApplicationProvider.getApplicationContext()
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        db = Room.inMemoryDatabaseBuilder(context, WordRoomDatabase::class.java)
+        db = Room.inMemoryDatabaseBuilder(context, MainRoomDatabase::class.java)
             // Allowing main thread queries, just for testing.
             .allowMainThreadQueries()
             .build()
-        wordDao = db.wordDao()
+        MyDao = db.wordDao()
     }
 
     @After
@@ -63,20 +66,20 @@ class WordDaoTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetWord() = runBlocking {
-        val word = Word("word")
-        wordDao.insert(word)
-        val allWords = wordDao.getAlphabetizedWords().first()
+        val word = User("word")
+        MyDao.insert(word)
+        val allWords = MyDao.getAlphabetizedWords().first()
         assertEquals(allWords[0].word, word.word)
     }
 
     @Test
     @Throws(Exception::class)
     fun getAllWords() = runBlocking {
-        val word = Word("aaa")
-        wordDao.insert(word)
-        val word2 = Word("bbb")
-        wordDao.insert(word2)
-        val allWords = wordDao.getAlphabetizedWords().first()
+        val word = User("aaa")
+        MyDao.insert(word)
+        val word2 = User("bbb")
+        MyDao.insert(word2)
+        val allWords = MyDao.getAlphabetizedWords().first()
         assertEquals(allWords[0].word, word.word)
         assertEquals(allWords[1].word, word2.word)
     }
@@ -84,12 +87,12 @@ class WordDaoTest {
     @Test
     @Throws(Exception::class)
     fun deleteAll() = runBlocking {
-        val word = Word("word")
-        wordDao.insert(word)
-        val word2 = Word("word2")
-        wordDao.insert(word2)
-        wordDao.deleteAll()
-        val allWords = wordDao.getAlphabetizedWords().first()
+        val word = User("word")
+        MyDao.insert(word)
+        val word2 = User("word2")
+        MyDao.insert(word2)
+        MyDao.deleteAll()
+        val allWords = MyDao.getAlphabetizedWords().first()
         assertTrue(allWords.isEmpty())
     }
 }

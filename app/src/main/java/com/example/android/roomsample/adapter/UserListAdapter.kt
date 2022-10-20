@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.android.roomwordssample
+package com.example.android.roomsample.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.Button
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.roomwordssample.WordListAdapter.WordViewHolder
+import com.example.android.roomsample.R
+import com.example.android.roomsample.ui.WordViewModel
+import com.example.android.roomsample.adapter.UserListAdapter.WordViewHolder
+import com.example.android.roomsample.entities.User
 
-class WordListAdapter(vm : WordViewModel) : ListAdapter<Word, WordViewHolder>(WORDS_COMPARATOR) {
+class UserListAdapter(vm : WordViewModel) : ListAdapter<User, WordViewHolder>(WORDS_COMPARATOR) {
 
     var  viewModel : WordViewModel = vm
 
@@ -36,27 +40,32 @@ class WordListAdapter(vm : WordViewModel) : ListAdapter<Word, WordViewHolder>(WO
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current.word,current.id.toString(),viewModel)
+        holder.bind(current.name,current.id.toString(),current.surname,viewModel)
     }
 
     class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val wordItemView: TextView = itemView.findViewById(R.id.textView)
         private val id: TextView = itemView.findViewById(R.id.textView2)
-        private val layout: LinearLayout = itemView.findViewById(R.id.linear)
+        private val surname: TextView = itemView.findViewById(R.id.textView3)
+        private val layout: ConstraintLayout = itemView.findViewById(R.id.linear)
+        private val delete: Button = itemView.findViewById(R.id.delete)
 
-        fun bind(text: String?,text2: String?,vm: WordViewModel) {
+        fun bind(text: String?,text2: String?,text3:String?,vm: WordViewModel) {
             wordItemView.text = text
             id.text = text2
+            surname.text = text3
             layout.setOnClickListener {
+            vm.getUserAndDevice(Integer.valueOf(id.text.toString()))
+            }
 
-                  vm.updateById(id.text.toString().toInt(),"cobi")
+            layout.setOnLongClickListener {
+               // vm.updateById(id.text.toString().toInt(),"cobi")
+                vm.update(id.text.toString().toInt())
+                return@setOnLongClickListener true
+            }
 
-                //            val a = repository.getAll()
-//        //update with primary key
-//      val user = Word("Berke","1")
-//      repository.update(user)
-
-
+            delete.setOnClickListener {
+                vm.delete(id.text.toString().toInt())
             }
         }
 
@@ -70,13 +79,13 @@ class WordListAdapter(vm : WordViewModel) : ListAdapter<Word, WordViewHolder>(WO
     }
 
     companion object {
-        private val WORDS_COMPARATOR = object : DiffUtil.ItemCallback<Word>() {
-            override fun areItemsTheSame(oldItem: Word, newItem: Word): Boolean {
+        private val WORDS_COMPARATOR = object : DiffUtil.ItemCallback<User>() {
+            override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
                 return oldItem === newItem
             }
 
-            override fun areContentsTheSame(oldItem: Word, newItem: Word): Boolean {
-                return oldItem.word == newItem.word
+            override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+                return oldItem.name == newItem.name
             }
         }
     }

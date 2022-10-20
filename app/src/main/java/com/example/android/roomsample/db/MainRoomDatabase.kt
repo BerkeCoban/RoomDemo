@@ -1,58 +1,48 @@
-/*
- * Copyright (C) 2017 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-package com.example.android.roomwordssample
+package com.example.android.roomsample.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.android.roomsample.dao.MyDao
+import com.example.android.roomsample.entities.Device
+import com.example.android.roomsample.entities.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 /**
  * This is the backend. The database. This used to be done by the OpenHelper.
  * The fact that this has very few comments emphasizes its coolness.
  */
-@Database(entities = [Word::class], version = 1)
-abstract class WordRoomDatabase : RoomDatabase() {
+@Database(entities = [User::class, Device::class], version = 1)
+abstract class MainRoomDatabase : RoomDatabase() {
 
-    abstract fun wordDao(): WordDao
+    abstract fun myDao(): MyDao
 
     companion object {
         @Volatile
-        private var INSTANCE: WordRoomDatabase? = null
+        private var INSTANCE: MainRoomDatabase? = null
 
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
-        ): WordRoomDatabase {
+        ): MainRoomDatabase {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    WordRoomDatabase::class.java,
-                    "word_database"
+                    MainRoomDatabase::class.java,
+                    "my_database"
                 )
-                    // Wipes and rebuilds instead of migrating if no Migration object.
-                    // Migration is not part of this codelab.
+
                     .fallbackToDestructiveMigration()
+                   //     .addMigrations(MIGRATION_1_2)
                     .addCallback(WordDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
@@ -71,7 +61,7 @@ abstract class WordRoomDatabase : RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
-                        populateDatabase(database.wordDao())
+                        populateDatabase(database.myDao())
                     }
                 }
             }
@@ -81,15 +71,22 @@ abstract class WordRoomDatabase : RoomDatabase() {
          * Populate the database in a new coroutine.
          * If you want to start with more words, just add them.
          */
-        suspend fun populateDatabase(wordDao: WordDao) {
+        suspend fun populateDatabase(MyDao: MyDao) {
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
-            wordDao.deleteAll()
+            MyDao.deleteAll()
 
-            var word = Word("Hello","11")
-            wordDao.insert(word)
-            word = Word("World!","222")
-            wordDao.insert(word)
+
+            val user = User( "Berke","Çoban")
+             MyDao.insert(user)
+            MyDao.insert(Device(1,"model12"))
+        }
+
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE word_table "
+                        + " ADD COLUMN extrafield INTEGER NOT NULL DEFAULT 0")
+            }
         }
     }
 }

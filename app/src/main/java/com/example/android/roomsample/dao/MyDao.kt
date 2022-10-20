@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.android.roomwordssample
+package com.example.android.roomsample.dao
 
 import androidx.room.*
+import com.example.android.roomsample.entities.Device
+import com.example.android.roomsample.entities.User
+import com.example.android.roomsample.entities.UserAndDevice
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -28,28 +31,40 @@ import kotlinx.coroutines.flow.Flow
  * https://developer.android.com/topic/libraries/architecture/room.html#type-converters
  */
 
-@Dao
-interface WordDao {
+   @Dao
+   interface MyDao : BaseDao<Device> {
 
-    // The flow always holds/caches latest version of data. Notifies its observers when the
-    // data has changed.
 
-    // alfabetik siralam icin ASC
-    @Query("SELECT * FROM word_table ORDER BY word ASC")
-    fun getAlphabetizedWords(): Flow<List<Word>>
+    @Query("SELECT * FROM user_table ORDER BY name ASC")
+    fun getAlphabetizedWords(): Flow<List<User>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(word: Word)
+    suspend fun insert(user: User) : Long
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun update(word: Word)
+    suspend fun update(user: User)
 
-    @Query("DELETE FROM word_table")
+    @Query("DELETE FROM user_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM word_table ORDER BY word ASC")
-    suspend fun getAll() : List<Word>
+    @Query("DELETE FROM device_table")
+    suspend fun deleteAll2()
 
-    @Query("SELECT * FROM word_table WHERE id=:id")
-    suspend fun getById(id: Int) : Word
+    @Query("SELECT * FROM user_table WHERE id=:id")
+    suspend fun getUserById(id: Int) : User
+
+    @Query("SELECT * FROM device_table WHERE id=:id")
+    suspend fun getDeviceById(id: Int) : Device
+
+   @Delete
+   suspend fun delete(user: User)
+
+
+    @Transaction
+    @Query("SELECT * FROM user_table WHERE id=:id")
+   suspend fun getUsersAndDevices(id: Int): List<UserAndDevice>?
+
+
+
+
 }

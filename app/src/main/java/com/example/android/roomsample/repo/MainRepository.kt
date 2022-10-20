@@ -13,46 +13,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.roomwordssample
+package com.example.android.roomsample.repo
 
 import androidx.annotation.WorkerThread
+import com.example.android.roomsample.dao.MyDao
+import com.example.android.roomsample.entities.Device
+import com.example.android.roomsample.entities.User
+import com.example.android.roomsample.entities.UserAndDevice
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Abstracted Repository as promoted by the Architecture Guide.
  * https://developer.android.com/topic/libraries/architecture/guide.html
  */
-class WordRepository(private val wordDao: WordDao) {
+class MainRepository(private val MyDao: MyDao) {
 
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    val allWords: Flow<List<Word>> = wordDao.getAlphabetizedWords()
+    val allWords: Flow<List<User>> = MyDao.getAlphabetizedWords()
 
     // By default Room runs suspend queries off the main thread, therefore, we don't need to
     // implement anything else to ensure we're not doing long running database work
     // off the main thread.
     @WorkerThread
-    suspend fun insert(word: Word) {
-        wordDao.insert(word)
+    suspend fun insert(user: User) :Long {
+       return MyDao.insert(user)
     }
 
     @WorkerThread
-    suspend fun update(word: Word) {
-        wordDao.update(word)
+    suspend fun insertDevice(device: Device) {
+        MyDao.insert(device)
     }
 
     @WorkerThread
-    suspend fun getAll() : List<Word> {
-      return  wordDao.getAll()
+    suspend fun update(user: User) {
+        MyDao.update(user)
     }
 
     @WorkerThread
-    suspend fun getById(id:Int) :Word {
-        return  wordDao.getById(id)
+    suspend fun deleteUser(user: User) {
+        MyDao.delete(user)
+    }
+
+    @WorkerThread
+    suspend fun deleteDevice(device: Device) {
+        MyDao.delete(device)
+    }
+
+    @WorkerThread
+    suspend fun getById(id:Int) : User {
+        return  MyDao.getUserById(id)
+    }
+
+    @WorkerThread
+    suspend fun getByIdDevice(id:Int) : Device {
+        return  MyDao.getDeviceById(id)
     }
 
     @WorkerThread
     suspend fun deleteAll() {
-        wordDao.deleteAll()
+        MyDao.deleteAll()
+        MyDao.deleteAll2()
+    }
+
+
+    @WorkerThread
+    suspend fun getUserWithDevice(id:Int): List<UserAndDevice>? {
+       return MyDao.getUsersAndDevices(id)
     }
 }
